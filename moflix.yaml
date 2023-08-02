@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moflixv1
+  labels:
+    app: moflixv1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: moflixv1
+      labels:
+        app: moflixv1
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: moflixv1
+        image: movflixregistry.azurecr.io/movieflix:v1
+        resources:
+          limits:
+            cpu: 1
+            memory: 800M
+        ports:
+          - containerPort: 80
+  selector:
+    matchLabels:
+      app: moflixv1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moflixv1
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: moflixv1
